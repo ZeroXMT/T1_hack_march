@@ -6,7 +6,7 @@ spring:
     gateway:
       routes:
         - id: cards-app
-          uri: http://localhost:8081
+          uri: http://localhost:8080
           predicates:
             - Path=/cards/**
           filters:

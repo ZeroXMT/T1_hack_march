@@ -11,8 +11,8 @@ repositories {
 
 dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-gateway:4.1.5")
-    implementation("org.springframework.boot:spring-boot-starter-security:3.4.2")
-    implementation("org.telegram:telegrambots-spring-boot-starter:6.8.0")
+    implementation("org.springframework.boot:spring-boot-starter-security:3.2.2")
+    implementation("org.springframework.boot:spring-boot-starter-webflux:3.2.2")
 
 
 }
