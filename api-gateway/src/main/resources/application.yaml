@@ -6,9 +6,11 @@ spring:
     gateway:
       routes:
         - id: cards-app
-          uri: http://localhost:8080
+          uri: http://localhost:8081
           predicates:
             - Path=/cards/**
-          filters:
-            - TokenValidationFilter
+        - id: user-app
+          uri:  http://localhost:8080
+          predicates:
+            - Path=/api/v1/**
 

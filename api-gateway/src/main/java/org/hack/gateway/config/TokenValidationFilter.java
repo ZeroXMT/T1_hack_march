@@ -25,7 +25,7 @@ public class TokenValidationFilter extends AbstractGatewayFilterFactory<TokenVal
             ServerHttpRequest request = exchange.getRequest();
             String token = request.getHeaders().getFirst("Authorization");
 
-            if (true) {
+            if (token != null && isValidToken(token)) {
                 return chain.filter(exchange);
             } else {
                 exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
@@ -40,7 +40,7 @@ public class TokenValidationFilter extends AbstractGatewayFilterFactory<TokenVal
     public boolean isValidToken(String token) {
         try {
             // Создаем URL для запроса
-            URL url = new URL("http://localhost:8081/api/v1/validate");
+            URL url = new URL("http://localhost:8080/api/v1/validate");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
             // Настраиваем соединение
