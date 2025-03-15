@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public class JwtUtil {
-    public static JwtAuthentication generate(Claims claims) {
+    public static JwtAuthentication generateAuthentication(Claims claims) {
         final JwtAuthentication jwtAuthentication = new JwtAuthentication();
         jwtAuthentication.setId(claims.get("id", Long.class));
         jwtAuthentication.setEmail(claims.getSubject());

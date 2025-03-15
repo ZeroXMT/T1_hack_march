@@ -29,7 +29,7 @@ public class JwtFilter extends GenericFilterBean {
         final String token = getTokenFromRequest((HttpServletRequest) servletRequest);
         if (token != null && jwtProvider.validateAccessToken(token)) {
             final Claims claims = jwtProvider.getAccessClaims(token);
-            final JwtAuthentication authentication = JwtUtil.generate(claims);
+            final JwtAuthentication authentication = JwtUtil.generateAuthentication(claims);
             authentication.setAuthenticated(true);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
