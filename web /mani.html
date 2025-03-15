@@ -72,6 +72,18 @@
             font-style: italic;
             color: #777;
         }
+        #sendFiltersButton {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        #sendFiltersButton:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
@@ -118,6 +130,8 @@
                 <div id="certificateFilters">
                     </div>
             </div>
+
+            <button id="sendFiltersButton">Send Filters to Server</button>
         </div>
 
         <div class="cards-list">
@@ -396,6 +410,63 @@
             });
         }
 
+        // Function to collect filter values and send REST request
+        function sendFiltersToServer() {
+            const cardNameQuery = document.getElementById('cardName').value;
+            const selectedCashbacks = Array.from(document.querySelectorAll('#cashbackFilters input:checked'))
+                                             .map(checkbox => checkbox.value);
+            const bankFilter = document.getElementById('bankFilter').value;
+            const gracePeriodFilter = document.getElementById('gracePeriodFilter').value;
+            const selectedPaymentProvider = document.querySelector('#paymentProviderFilters input:checked');
+            const paymentProviderFilter = selectedPaymentProvider ? selectedPaymentProvider.value : null;
+            const ratingFilter = document.getElementById('ratingFilter').value;
+            const selectedCertificate = document.querySelector('#certificateFilters input:checked');
+            const certificateFilter = selectedCertificate ? selectedCertificate.value : null;
+
+            const filtersData = {
+                cardName: cardNameQuery,
+                cashbacks: selectedCashbacks,
+                bank: bankFilter,
+                gracePeriod: gracePeriodFilter,
+                paymentProvider: paymentProviderFilter,
+                rating: ratingFilter,
+                certificate: certificateFilter
+            };
+
+            // Replace 'YOUR_API_ENDPOINT' with your actual API endpoint
+            const apiUrl = 'YOUR_API_ENDPOINT';
+
+            fetch(apiUrl, {
+                method: 'POST', // Or 'GET' depending on your API
+                headers: {
+                    'Content-Type': 'application/json' // If sending JSON data
+                    // You might need to add other headers like 'Authorization'
+                },
+                body: JSON.stringify(filtersData) // If sending JSON data, comment out for GET
+                // For GET request, you might need to append query parameters to the URL instead of using body
+                // apiUrl += '?' + new URLSearchParams(filtersData).toString(); and use method: 'GET'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json(); // Or response.text() if API returns text
+            })
+            .then(data => {
+                console.log('API Response:', data);
+                // Handle the response data here, e.g., update the card list based on server response
+                // For this example, we will just log the data and re-render the card list locally.
+                // In a real application, you would likely replace `cardData` with the data received from the server.
+                // For now, we will just re-filter the existing `cardData` based on the same filters.
+                filterCards(); // Re-filter and re-render based on current filters. In real scenario, you might use server data.
+            })
+            .catch(error => {
+                console.error('Error sending filters to server:', error);
+                // Handle errors, e.g., display an error message to the user
+            });
+        }
+
+
         // Event listeners for filters
         document.getElementById('cardName').addEventListener('input', filterCards);
         document.getElementById('bankFilter').addEventListener('input', filterCards);
@@ -419,6 +490,9 @@
             certificateRadios.forEach(radio => {
                 radio.addEventListener('change', filterCards);
             });
+
+            // Event listener for the "Send Filters" button
+            document.getElementById('sendFiltersButton').addEventListener('click', sendFiltersToServer);
         }
 
 
