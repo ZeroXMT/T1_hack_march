@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Card Finder</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+        }
+        .container {
+            display: flex;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .filters {
+            width: 300px;
+            padding: 20px;
+            border-right: 1px solid #ccc;
+        }
+        .filters h2 {
+            margin-top: 0;
+        }
+        .filter-group {
+            margin-bottom: 20px;
+        }
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .filter-group input[type="text"],
+        .filter-group input[type="number"],
+        .filter-group select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .filter-group input[type="checkbox"],
+        .filter-group input[type="radio"] {
+            margin-right: 5px;
+        }
+        .cards-list {
+            flex: 1;
+            padding: 20px;
+        }
+        .card {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+        }
+        .card h3 {
+            margin-top: 0;
+        }
+        .card-details {
+            margin-top: 10px;
+        }
+        .card-detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        .card-detail-label {
+            font-weight: bold;
+        }
+        .no-cards {
+            text-align: center;
+            font-style: italic;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <h1>Find Your Perfect Credit Card</h1>
+
+    <div class="container">
+        <div class="filters">
+            <h2>Filters</h2>
+
+            <div class="filter-group">
+                <label for="cardName">Search Card Name:</label>
+                <input type="text" id="cardName" placeholder="Enter card name">
+            </div>
+
+            <div class="filter-group">
+                <label>Cashbacks:</label>
+                <div id="cashbackFilters">
+                    </div>
+            </div>
+
+            <div class="filter-group">
+                <label for="bankFilter">Bank:</label>
+                <input type="text" id="bankFilter" placeholder="Enter bank name">
+            </div>
+
+            <div class="filter-group">
+                <label for="gracePeriodFilter">Grace Period (days):</label>
+                <input type="number" id="gracePeriodFilter" placeholder="Days" min="0">
+            </div>
+
+            <div class="filter-group">
+                <label>Payment Provider:</label>
+                <div id="paymentProviderFilters">
+                    </div>
+            </div>
+
+             <div class="filter-group">
+                <label for="ratingFilter">Ratings (min):</label>
+                <input type="number" id="ratingFilter" placeholder="Minimum rating" min="0" max="5" step="0.1">
+            </div>
+
+            <div class="filter-group">
+                <label>Bank Certificate:</label>
+                <div id="certificateFilters">
+                    </div>
+            </div>
+        </div>
+
+        <div class="cards-list">
+            <h2>Credit Cards</h2>
+            <div id="cardList">
+                <p class="no-cards">No cards match your criteria.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const cardData = [
+            {
+                name: "Card Alpha",
+                bank: "Bank A",
+                cashbacks: ["Супермаркеты", "АЗС"],
+                grace_period: 50,
+                payment_provider: "visa",
+                rating: 4.5,
+                certificate: "не требуется",
+                description: "Great card for everyday spending."
+            },
+            {
+                name: "Card Beta",
+                bank: "Bank B",
+                cashbacks: ["Кафе и рестораны", "Кино и развлечения"],
+                grace_period: 60,
+                payment_provider: "mastercard",
+                rating: 3.8,
+                certificate: "обязательно",
+                description: "Perfect for entertainment and dining."
+            },
+            {
+                name: "Card Gamma",
+                bank: "Bank C",
+                cashbacks: ["На всё", "Аптеки"],
+                grace_period: 55,
+                payment_provider: "mir",
+                rating: 4.2,
+                certificate: "по требованию",
+                description: "Universal cashback and health benefits."
+            },
+             {
+                name: "Card Delta",
+                bank: "Bank A",
+                cashbacks: ["Одежда и обувь", "Маркетплейсы"],
+                grace_period: 45,
+                payment_provider: "unionpay",
+                rating: 4.9,
+                certificate: "не требуется",
+                description: "Fashion and online shopping card."
+            },
+            {
+                name: "Card Epsilon",
+                bank: "Bank B",
+                cashbacks: ["Туры для путешествий", "Авиабилеты"],
+                grace_period: 70,
+                payment_provider: "visa",
+                rating: 3.5,
+                certificate: "обязательно",
+                description: "Travel enthusiast's choice."
+            },
+             {
+                name: "Card Zeta",
+                bank: "Bank C",
+                cashbacks: ["Электроника и бытовая техника", "Дом и ремонт"],
+                grace_period: 65,
+                payment_provider: "mastercard",
+                rating: 4.0,
+                certificate: "по требованию",
+                description: "For home improvement and tech purchases."
+            },
+             {
+                name: "Card Eta",
+                bank: "Bank A",
+                cashbacks: ["Фитнес", "Красота и здоровье"],
+                grace_period: 52,
+                payment_provider: "mir",
+                rating: 4.7,
+                certificate: "не требуется",
+                description: "Wellness and health focused card."
+            },
+             {
+                name: "Card Theta",
+                bank: "Bank B",
+                cashbacks: ["Транспорт", "АЗС", "Каршеринг"],
+                grace_period: 40,
+                payment_provider: "unionpay",
+                rating: 3.9,
+                certificate: "обязательно",
+                description: "Commute and travel friendly card."
+            },
+             {
+                name: "Card Iota",
+                bank: "Bank C",
+                cashbacks: ["Детские товары", "Игры", "Кино и развлечения"],
+                grace_period: 58,
+                payment_provider: "visa",
+                rating: 4.3,
+                certificate: "по требованию",
+                description: "Family and entertainment card."
+            },
+             {
+                name: "Card Kappa",
+                bank: "Bank A",
+                cashbacks: ["Ж/Д билеты", "Авиабилеты", "Бронирование отелей"],
+                grace_period: 75,
+                payment_provider: "mastercard",
+                rating: 3.6,
+                certificate: "не требуется",
+                description: "Travel and vacation companion."
+            },
+        ];
+
+        const cashbackOptions = [
+            'У партнеров', 'На всё', 'Кафе и рестораны', 'Привет, Мир!',
+            'Красота и здоровье', 'Товары для животных', 'Такси',
+            'Туры для путешествий', 'Кино и развлечения', 'Ж/Д билеты',
+            'Электроника и бытовая техника', 'Транспорт', 'Дом и ремонт',
+            'Одежда и обувь', 'Спорттовары', 'Каршеринг', 'Аптеки', 'Авиабилеты',
+            'Аренда автомобилей', 'Бронирование отелей', 'Автоуслуги', 'Фастфуд',
+            'АЗС', 'Цветы', 'Детские товары', 'Фитнес', 'Маркетплейсы',
+            'Супермаркеты', 'Канцтовары и книги', 'Оптика', 'ЖКХ', 'Игры',
+            'Обучение', 'Театры'
+        ];
+        const paymentProviderOptions = ['visa', 'mastercard', 'unionpay', 'mir'];
+        const certificateOptions = ['обязательно', 'по требованию', 'не требуется'];
+
+        function renderCashbackFilters() {
+            const cashbackFiltersDiv = document.getElementById('cashbackFilters');
+            cashbackOptions.forEach(option => {
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.value = option;
+                checkbox.id = `cashback-${option.replace(/ /g, '-')}`; // Create unique id
+                const label = document.createElement('label');
+                label.textContent = option;
+                label.setAttribute('for', `cashback-${option.replace(/ /g, '-')}`); // Associate label with checkbox
+                const div = document.createElement('div');
+                div.appendChild(checkbox);
+                div.appendChild(label);
+                cashbackFiltersDiv.appendChild(div);
+            });
+        }
+
+        function renderPaymentProviderFilters() {
+            const paymentProviderFiltersDiv = document.getElementById('paymentProviderFilters');
+            paymentProviderOptions.forEach(option => {
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'paymentProvider'; // Use same name for radio group
+                radio.value = option;
+                radio.id = `payment-${option}`; // Create unique id
+                const label = document.createElement('label');
+                label.textContent = option;
+                label.setAttribute('for', `payment-${option}`); // Associate label with radio
+                const div = document.createElement('div');
+                div.appendChild(radio);
+                div.appendChild(label);
+                paymentProviderFiltersDiv.appendChild(div);
+            });
+        }
+
+        function renderCertificateFilters() {
+            const certificateFiltersDiv = document.getElementById('certificateFilters');
+            certificateOptions.forEach(option => {
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'certificate'; // Use same name for radio group
+                radio.value = option;
+                radio.id = `certificate-${option.replace(/ /g, '-')}`; // Create unique id
+                const label = document.createElement('label');
+                label.textContent = option;
+                label.setAttribute('for', `certificate-${option.replace(/ /g, '-')}`); // Associate label with radio
+                const div = document.createElement('div');
+                div.appendChild(radio);
+                div.appendChild(label);
+                certificateFiltersDiv.appendChild(div);
+            });
+        }
+
+
+        function filterCards() {
+            const cardNameQuery = document.getElementById('cardName').value.toLowerCase();
+            const selectedCashbacks = Array.from(document.querySelectorAll('#cashbackFilters input:checked'))
+                                             .map(checkbox => checkbox.value);
+            const bankFilter = document.getElementById('bankFilter').value.toLowerCase();
+            const gracePeriodFilter = parseInt(document.getElementById('gracePeriodFilter').value) || 0;
+            const selectedPaymentProvider = document.querySelector('#paymentProviderFilters input:checked');
+            const paymentProviderFilter = selectedPaymentProvider ? selectedPaymentProvider.value : null;
+            const ratingFilter = parseFloat(document.getElementById('ratingFilter').value) || 0;
+            const selectedCertificate = document.querySelector('#certificateFilters input:checked');
+            const certificateFilter = selectedCertificate ? selectedCertificate.value : null;
+
+
+            const filteredCards = cardData.filter(card => {
+                if (cardNameQuery && !card.name.toLowerCase().includes(cardNameQuery)) {
+                    return false;
+                }
+                if (bankFilter && !card.bank.toLowerCase().includes(bankFilter)) {
+                    return false;
+                }
+                if (gracePeriodFilter && card.grace_period < gracePeriodFilter) {
+                    return false;
+                }
+                if (paymentProviderFilter && card.payment_provider !== paymentProviderFilter) {
+                    return false;
+                }
+                if (ratingFilter && card.rating < ratingFilter) {
+                    return false;
+                }
+                if (certificateFilter && card.certificate !== certificateFilter) {
+                    return false;
+                }
+
+                if (selectedCashbacks.length > 0) {
+                    if (!selectedCashbacks.some(cashback => card.cashbacks.includes(cashback))) {
+                        return false;
+                    }
+                }
+
+                return true;
+            });
+
+            renderCardList(filteredCards);
+        }
+
+        function renderCardList(cards) {
+            const cardListDiv = document.getElementById('cardList');
+            cardListDiv.innerHTML = ''; // Clear previous results
+
+            if (cards.length === 0) {
+                const noCardsMessage = document.createElement('p');
+                noCardsMessage.classList.add('no-cards');
+                noCardsMessage.textContent = 'No cards match your criteria.';
+                cardListDiv.appendChild(noCardsMessage);
+                return;
+            }
+
+            cards.forEach(card => {
+                const cardDiv = document.createElement('div');
+                cardDiv.classList.add('card');
+
+                const cardTitle = document.createElement('h3');
+                cardTitle.textContent = card.name;
+                cardDiv.appendChild(cardTitle);
+
+                const cardDetailsDiv = document.createElement('div');
+                cardDetailsDiv.classList.add('card-details');
+
+                const details = [
+                    { label: 'Bank', value: card.bank },
+                    { label: 'Cashbacks', value: card.cashbacks.join(', ') },
+                    { label: 'Grace Period', value: `${card.grace_period} days` },
+                    { label: 'Payment Provider', value: card.payment_provider },
+                    { label: 'Rating', value: card.rating },
+                    { label: 'Certificate', value: card.certificate },
+                    { label: 'Description', value: card.description }
+                ];
+
+                details.forEach(detail => {
+                    const detailRow = document.createElement('div');
+                    detailRow.classList.add('card-detail-row');
+                    const detailLabel = document.createElement('span');
+                    detailLabel.classList.add('card-detail-label');
+                    detailLabel.textContent = `${detail.label}:`;
+                    const detailValue = document.createElement('span');
+                    detailValue.textContent = detail.value;
+                    detailRow.appendChild(detailLabel);
+                    detailRow.appendChild(detailValue);
+                    cardDetailsDiv.appendChild(detailRow);
+                });
+
+                cardDiv.appendChild(cardDetailsDiv);
+                cardListDiv.appendChild(cardDiv);
+            });
+        }
+
+        // Event listeners for filters
+        document.getElementById('cardName').addEventListener('input', filterCards);
+        document.getElementById('bankFilter').addEventListener('input', filterCards);
+        document.getElementById('gracePeriodFilter').addEventListener('input', filterCards);
+        document.getElementById('ratingFilter').addEventListener('input', filterCards);
+
+        // Event listeners for checkboxes and radio buttons are added dynamically after rendering
+
+        function setupEventListeners() {
+            const cashbackCheckboxes = document.querySelectorAll('#cashbackFilters input[type="checkbox"]');
+            cashbackCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', filterCards);
+            });
+
+            const paymentRadios = document.querySelectorAll('#paymentProviderFilters input[type="radio"]');
+            paymentRadios.forEach(radio => {
+                radio.addEventListener('change', filterCards);
+            });
+
+             const certificateRadios = document.querySelectorAll('#certificateFilters input[type="radio"]');
+            certificateRadios.forEach(radio => {
+                radio.addEventListener('change', filterCards);
+            });
+        }
+
+
+        renderCashbackFilters();
+        renderPaymentProviderFilters();
+        renderCertificateFilters();
+        renderCardList(cardData); // Initial render of all cards
+        setupEventListeners(); // Setup event listeners after rendering filters
+    </script>
+</body>
+</html>
