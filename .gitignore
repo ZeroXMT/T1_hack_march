@@ -1,9 +1,3 @@
-api-gateway
-.idea
-*.iml
-./
-
-.venv
 .idea
 
 # Ignore Gradle project-specific cache directory
@@ -12,4 +6,3 @@ api-gateway
 # Ignore Gradle build output directory
 build
 *.iml
-

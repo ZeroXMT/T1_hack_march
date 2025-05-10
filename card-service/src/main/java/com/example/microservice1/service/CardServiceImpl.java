@@ -5,6 +5,7 @@ import com.example.microservice1.entity.Card;
 import com.example.microservice1.mapper.CardMapper;
 //import com.example.microservice1.mapper.Mapper;
 import com.example.microservice1.repository.CardRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,14 +45,13 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
+    @Transactional
     public CardDto updateCard(UUID productId, CardDto cardDto) {
         Optional<Card> cardOptional = cardRepository.findById(productId);
         if (cardOptional.isPresent()) {
             Card existingCard = cardOptional.get();
-            //Обновляем все поля из cardDto
-
-            Card updatedCard = cardRepository.save(existingCard);
-            return cardMapper.cardToCardDto(updatedCard);
+            cardMapper.updateCardFromDto(cardDto, existingCard);
+            return cardMapper.cardToCardDto(existingCard);
         } else {
             return null; // Handle not found case properly (e.g., throw exception)
         }
